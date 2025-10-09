@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Semana 8</string>
+    <string name="string_button_buscar_ubicacion">Buscar ubicacion</string>
+    <string name="string_content_description_map">GoogleMaps</string>
 </resources>
