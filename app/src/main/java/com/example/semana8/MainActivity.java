@@ -117,13 +117,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
-        if (mapViewBundle == null) {
+        if(mapViewBundle == null) {
             mapViewBundle = new Bundle();
-            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
         }
+
         mapView.onSaveInstanceState(mapViewBundle);
+        outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
+        super.onSaveInstanceState(outState);
     }
     //Mapa
 
