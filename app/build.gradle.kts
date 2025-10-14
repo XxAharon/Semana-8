@@ -1,11 +1,24 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
 
+var ubicacionArchivoProperties = rootProject.file("local.properties")
+var localProperties = Properties()
+if (ubicacionArchivoProperties.exists()) {
+    localProperties.load(ubicacionArchivoProperties.inputStream())
+}
+var mapsKey = localProperties.getProperty("API_KEY")
+
+
 android {
     namespace = "com.example.semana8"
     compileSdk = 36
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.example.semana8"
@@ -15,6 +28,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "MAP_API_KEY", "\"" + mapsKey + "\"")
+        manifestPlaceholders["GOOGLE_MAPS_API_KEY"] = mapsKey
     }
 
     buildTypes {
@@ -38,8 +53,7 @@ android {
 dependencies {
     //implementacion para mapa, ubicacion y locacion.
     implementation ("com.google.android.gms:play-services-location:19.0.1")
-    implementation ("com.google.android.gms:play-services-maps:18.1.0")
-    implementation ("org.maplibre.gl:android-sdk:10.0.0")
+    implementation ("com.google.android.gms:play-services-maps:18.2.0")
 
     implementation(libs.appcompat)
     implementation(libs.material)
