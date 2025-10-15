@@ -2,4 +2,6 @@
     <string name="app_name">Semana 8</string>
     <string name="string_button_buscar_ubicacion">Buscar ubicacion</string>
     <string name="string_content_description_map">GoogleMaps</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

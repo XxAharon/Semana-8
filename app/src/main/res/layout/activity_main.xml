@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <com.google.android.gms.maps.MapView
-        android:id="@+id/map"
+        android:id="@+id/contentMapFragment"
         android:contentDescription="@string/string_content_description_map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

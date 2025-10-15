@@ -18,6 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -28,22 +31,23 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+    public GoogleMap googleMap;
     private MapView mapView;
-    private GoogleMap googleMap;
-    private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private int cantidadPermisosDenegados = 0;
-    private Button button;
+    private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     Bundle mapViewBundle = null;
+    private Button button;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
     private Location lastKnownLocation = null;
-    private boolean mapaCargado = false;
+    public boolean mapaCargado = false;
 
     //Callback de permisos
     private final ActivityResultLauncher<String[]> requestPermissionLauncher =
@@ -65,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
             });
-    //Callback de permisos
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,17 +76,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         button = findViewById(R.id.ButtonBuscarUbicacion);
-        mapView = findViewById(R.id.map);
-
-        VerificarPermisos();
-
+        mapView = findViewById(R.id.contentMapFragment);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
 
         mapView.onCreate(mapViewBundle);
         mapView.getMapAsync(this);
+
+        VerificarPermisos();
 
         button.setOnClickListener(v -> {
             if(mapaCargado){
@@ -94,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    //Mapa
+    //Configuracion incial del mapa
     @Override
     public void onMapReady(GoogleMap map) {
         googleMap = map;
@@ -115,18 +118,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override public void onDestroy() { mapView.onDestroy(); super.onDestroy(); }
     @Override public void onLowMemory() { super.onLowMemory(); mapView.onLowMemory(); }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if(mapViewBundle == null) {
-            mapViewBundle = new Bundle();
-        }
-
-        mapView.onSaveInstanceState(mapViewBundle);
-        outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
-        super.onSaveInstanceState(outState);
-    }
-    //Mapa
-
     //Ubicacion
 
     LocationCallback locationCallback = new LocationCallback() {
@@ -142,15 +133,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     };
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(mapViewBundle == null) {
+            mapViewBundle = new Bundle();
+        }
+
+        mapView.onSaveInstanceState(mapViewBundle);
+        outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
+        super.onSaveInstanceState(outState);
+    }
+
+    //Ubicacion
     private void MostrarUbicacionEnMapa(double lat, double lon) {
-        // Almacena la última ubicación conocida
         if (lastKnownLocation == null) {
             lastKnownLocation = new Location("");
         }
         lastKnownLocation.setLatitude(lat);
         lastKnownLocation.setLongitude(lon);
 
-        // Mueve la cámara y marca la ubicación
         ActualizarMapaConUbicacion();
     }
 
@@ -163,9 +164,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void CargarUbicacion() {
+    public void CargarUbicacion() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             try {
+                googleMap.getUiSettings().isZoomControlsEnabled();
                 googleMap.setMyLocationEnabled(true);
             } catch (SecurityException e) {
                 Toast.makeText(this, "Permisos insuficientes para MyLocationEnabled.", Toast.LENGTH_SHORT).show();
@@ -194,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
         }
     }
-    //Ubicacion
 
     //Permisos
     private void VerificarPermisos() {
@@ -219,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
         }
     }
-    //Permisos
 
     //Dialogs
     private void DialogAlertSolicitarPermisos() {
