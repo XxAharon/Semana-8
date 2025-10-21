@@ -1,0 +1,74 @@
+# 🗺️ Proyecto: Google Maps y Gestión de Ubicación (Semana 8)
+
+## 📝 Descripción
+
+Este proyecto de Android Studio, desarrollado en **Java**, se centra en la implementación fundamental de **Google Maps SDK** y la correcta gestión de la **ubicación en tiempo real** (utilizando el **FusedLocationProviderClient**) y los **permisos** de acceso en el dispositivo.
+
+El código ilustra una aplicación de pantalla única que inicializa el mapa, solicita y verifica los permisos necesarios y se encarga de mostrar la posición actual del usuario.
+
+***
+
+## ⚙️ Arquitectura y Componentes Clave
+
+La aplicación está diseñada con una arquitectura de **Pantalla Única (Single Activity)**: toda la lógica reside en la `MainActivity`.
+
+### 1. Clases Principales
+
+| Archivo | Rol | Descripción |
+| :--- | :--- | :--- |
+| **`MainActivity.java`** | **Controlador/Vista** | Implementa la interfaz `OnMapReadyCallback`. Contiene toda la lógica para inicializar el mapa, manejar los permisos de ubicación con `ActivityResultLauncher`, obtener la última ubicación conocida (`CargarUbicacion()`) y mover la cámara. |
+
+### 2. Elementos de la Interfaz (`activity_main.xml`)
+
+La interfaz de usuario es simple y contiene:
+
+* Un **`SupportMapFragment`** cargado estáticamente, que es el componente que renderiza el mapa.
+* Un **`Button`** que se usa para iniciar la solicitud de ubicación y la verificación de permisos.
+
+### 3. Gestión de Permisos
+
+La aplicación utiliza la API moderna de **`ActivityResultLauncher`** para:
+
+1.  Verificar los permisos de ubicación (`ACCESS_FINE_LOCATION` y `ACCESS_COARSE_LOCATION`).
+2.  Solicitar permisos al usuario.
+3.  Manejar los casos de denegación (incluyendo la sugerencia de ir a la configuración si la denegación es persistente).
+
+### 4. Inicialización del Mapa
+
+1.  En `onCreate()`, se llama a `getMapAsync(this)` en el fragmento del mapa.
+2.  El método `onMapReady(GoogleMap googleMap)` se ejecuta cuando el mapa está listo.
+3.  Una vez listo y con los permisos concedidos, se activa la capa **"My Location"** (`setMyLocationEnabled(true)`), que dibuja el punto azul de la ubicación en el mapa.
+
+***
+
+## 🚀 Requisitos y Ejecución
+
+### Requisitos Previos
+
+* **Android Studio** (versión reciente con soporte para Gradle Kotlin DSL).
+* **Java Development Kit (JDK) 8** o superior.
+* **Clave API de Google Maps** configurada en el archivo `AndroidManifest.xml`.
+
+### Cómo Ejecutar
+
+1.  **Clonar el Repositorio:**
+    ```bash
+    git clone [https://github.com/XxAharon/Semana-8.git](https://github.com/XxAharon/Semana-8.git)
+    ```
+
+2.  **Configurar Clave API:**
+    * Obtén una clave API de Google Maps válida desde la [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
+    * Asegúrate de que la clave esté registrada correctamente en el `AndroidManifest.xml` del proyecto.
+
+3.  **Abrir en Android Studio:**
+    * Abre el proyecto en Android Studio.
+    * Espera a que Gradle sincronice las dependencias (`play-services-maps` y `play-services-location`).
+
+4.  **Lanzar la Aplicación:**
+    * Ejecuta la aplicación en un emulador o dispositivo físico. La aplicación te solicitará los permisos de ubicación al iniciar.
+
+***
+
+## 🧑‍💻 Autor
+
+* **XxAharon**
