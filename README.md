@@ -1,35 +1,74 @@
-1. Arquitectura y Flujo de la App
-Pantalla Única (MainActivity): Toda la funcionalidad reside en una sola Activity. Esta Activity es la responsable de mostrar la interfaz de usuario, solicitar permisos y manejar la lógica del mapa.
+# 🗺️ Proyecto: Google Maps y Gestión de Ubicación (Semana 8)
 
-Carga del Mapa: El mapa se carga estáticamente usando un <fragment> en el archivo activity_main.xml. Esto significa que el SupportMapFragment (el componente que muestra el mapa) es parte del diseño inicial de la MainActivity.
+## 📝 Descripción
 
-Inicialización (onCreate):
+Este proyecto de Android Studio, desarrollado en **Java**, se centra en la implementación fundamental de **Google Maps SDK** y la correcta gestión de la **ubicación en tiempo real** (utilizando el **FusedLocationProviderClient**) y los **permisos** de acceso en el dispositivo.
 
-Al iniciar la MainActivity, se configura la vista (activity_main.xml).
+El código ilustra una aplicación de pantalla única que inicializa el mapa, solicita y verifica los permisos necesarios y se encarga de mostrar la posición actual del usuario.
 
-Se obtiene una referencia al SupportMapFragment y se llama a getMapAsync(this). Esto inicia la carga del mapa en segundo plano.
+***
 
-La MainActivity implementa OnMapReadyCallback, por lo que el sistema llamará al método onMapReady() cuando el mapa esté listo.
+## ⚙️ Arquitectura y Componentes Clave
 
-Simultáneamente, se inicia la verificación de permisos de ubicación (VerificarPermisos()).
+La aplicación está diseñada con una arquitectura de **Pantalla Única (Single Activity)**: toda la lógica reside en la `MainActivity`.
 
-Manejo de Permisos: La app utiliza el ActivityResultLauncher moderno para solicitar permisos. Gestiona los casos en que el usuario los concede, los deniega una vez o los deniega repetidamente (lo que sugiere al usuario ir a la configuración del sistema).
+### 1. Clases Principales
 
-Obtención de Ubicación (onMapReady y CargarUbicacion):
+| Archivo | Rol | Descripción |
+| :--- | :--- | :--- |
+| **`MainActivity.java`** | **Controlador/Vista** | Implementa la interfaz `OnMapReadyCallback`. Contiene toda la lógica para inicializar el mapa, manejar los permisos de ubicación con `ActivityResultLauncher`, obtener la última ubicación conocida (`CargarUbicacion()`) y mover la cámara. |
 
-Cuando el mapa está cargado (onMapReady), la variable mapaCargado se establece en true. Si ya se tienen los permisos, se llama a CargarUbicacion().
+### 2. Elementos de la Interfaz (`activity_main.xml`)
 
-CargarUbicacion() utiliza el FusedLocationProviderClient para obtener la última ubicación conocida del dispositivo.
+La interfaz de usuario es simple y contiene:
 
-Activa la capa "My Location" (setMyLocationEnabled(true)), que es la responsable de dibujar el punto azul en el mapa.
+* Un **`SupportMapFragment`** cargado estáticamente, que es el componente que renderiza el mapa.
+* Un **`Button`** que se usa para iniciar la solicitud de ubicación y la verificación de permisos.
 
-Adicionalmente, mueve la cámara del mapa a la ubicación encontrada y coloca un marcador manual (pin rojo).
+### 3. Gestión de Permisos
 
-2. Componentes Clave
-MainActivity.java: El cerebro de la aplicación. Contiene toda la lógica para permisos, ubicación y la interacción con el mapa.
+La aplicación utiliza la API moderna de **`ActivityResultLauncher`** para:
 
-activity_main.xml: Define la interfaz visual. Contiene el SupportMapFragment para el mapa y un Button para buscar la ubicación.
+1.  Verificar los permisos de ubicación (`ACCESS_FINE_LOCATION` y `ACCESS_COARSE_LOCATION`).
+2.  Solicitar permisos al usuario.
+3.  Manejar los casos de denegación (incluyendo la sugerencia de ir a la configuración si la denegación es persistente).
 
-AndroidManifest.xml: Archivo de configuración crucial. Aquí se declaran los permisos necesarios (Internet, ubicación fina y gruesa) y, lo más importante, es donde se debe colocar la Clave API de Google Maps.
+### 4. Inicialización del Mapa
 
-build.gradle (Module: app): Define las dependencias del proyecto, como la librería de servicios de ubicación de Google (play-services-location) y la de mapas (play-services-maps).
+1.  En `onCreate()`, se llama a `getMapAsync(this)` en el fragmento del mapa.
+2.  El método `onMapReady(GoogleMap googleMap)` se ejecuta cuando el mapa está listo.
+3.  Una vez listo y con los permisos concedidos, se activa la capa **"My Location"** (`setMyLocationEnabled(true)`), que dibuja el punto azul de la ubicación en el mapa.
+
+***
+
+## 🚀 Requisitos y Ejecución
+
+### Requisitos Previos
+
+* **Android Studio** (versión reciente con soporte para Gradle Kotlin DSL).
+* **Java Development Kit (JDK) 8** o superior.
+* **Clave API de Google Maps** configurada en el archivo `AndroidManifest.xml`.
+
+### Cómo Ejecutar
+
+1.  **Clonar el Repositorio:**
+    ```bash
+    git clone [https://github.com/XxAharon/Semana-8.git](https://github.com/XxAharon/Semana-8.git)
+    ```
+
+2.  **Configurar Clave API:**
+    * Obtén una clave API de Google Maps válida desde la [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
+    * Asegúrate de que la clave esté registrada correctamente en el `AndroidManifest.xml` del proyecto.
+
+3.  **Abrir en Android Studio:**
+    * Abre el proyecto en Android Studio.
+    * Espera a que Gradle sincronice las dependencias (`play-services-maps` y `play-services-location`).
+
+4.  **Lanzar la Aplicación:**
+    * Ejecuta la aplicación en un emulador o dispositivo físico. La aplicación te solicitará los permisos de ubicación al iniciar.
+
+***
+
+## 🧑‍💻 Autor
+
+* **XxAharon**
